@@ -26,7 +26,7 @@ import { useIntent } from "~/hooks/routing";
 import { useTableNames } from "~/hooks/schema";
 import { useStable } from "~/hooks/stable";
 import { useIsLight } from "~/hooks/theme";
-import { executeQuery } from "~/screens/surrealist/connection/connection";
+import { executeQuery, getInstance } from "~/screens/surrealist/connection/connection";
 import { tagEvent } from "~/util/analytics";
 import { showError, showInfo, showWarning } from "~/util/helpers";
 import { iconDownload } from "~/util/icons";
@@ -48,24 +48,25 @@ const SqlImportForm = ({ isImporting, confirmImport }: SqlImportFormProps) => {
 
 	const submit = () => {
 		const execute = async (content: string) => {
-			const result = await executeQuery(content);
-			const failed = result.some((result) => !result.success);
 
-			if (failed) {
-				showError({
+			const instance = getInstance();
+			const sql = content.trim();
+
+			try {
+				await instance.import(sql);
+			} catch (err) {
+				return showError({
 					title: "Import failed",
-					subtitle: "There was an error importing the database",
+					subtitle: `There was an error importing the database: ${err}`,
+				});
+			} finally {
+				showInfo({
+					title: "Importer",
+					subtitle: "Database was successfully imported",
 				});
 
-				return;
+				await syncConnectionSchema();
 			}
-
-			showInfo({
-				title: "Importer",
-				subtitle: "Database was successfully imported",
-			});
-
-			await syncConnectionSchema();
 		};
 
 		confirmImport(execute);
@@ -155,9 +156,9 @@ const extractColumnNames = (importedRows: any[], withHeader: boolean) => {
 const extractColumnType = (importedRows: any[], index: number, withHeader: boolean) => {
 	const values = withHeader
 		? importedRows.map((row: any) => {
-				const key = Object.keys(importedRows?.[0] ?? {})[index];
-				return row?.[key];
-			})
+			const key = Object.keys(importedRows?.[0] ?? {})[index];
+			return row?.[key];
+		})
 		: (importedRows as unknown[][]).map((row) => row[index]);
 
 	const uniqueTypes = unique(values.map(extractSurrealType)).filter((t) => t !== "null");
@@ -817,13 +818,13 @@ const JsonImportForm = ({
 				const value = JSON.parse(content);
 				const items = isArray(value) ? value : [value];
 
-				return { data: items, errors: [] } as { data: any[]; errors: Error[] };
+				return { data: items, errors: [] } as { data: any[]; errors: Error[]; };
 			} catch (err) {
-				return { data: [], errors: [err] } as { data: any[]; errors: Error[] };
+				return { data: [], errors: [err] } as { data: any[]; errors: Error[]; };
 			}
 		}
 
-		return { data: [], errors: [] } as { data: any[]; errors: Error[] };
+		return { data: [], errors: [] } as { data: any[]; errors: Error[]; };
 	}, [importFile.current]);
 
 	const {
@@ -929,13 +930,13 @@ const NdJsonImportForm = ({
 					}
 				}
 
-				return { data: items, errors: [] } as { data: any[]; errors: Error[] };
+				return { data: items, errors: [] } as { data: any[]; errors: Error[]; };
 			} catch (err) {
-				return { data: [], errors: [err] } as { data: any[]; errors: Error[] };
+				return { data: [], errors: [err] } as { data: any[]; errors: Error[]; };
 			}
 		}
 
-		return { data: [], errors: [] } as { data: any[]; errors: Error[] };
+		return { data: [], errors: [] } as { data: any[]; errors: Error[]; };
 	}, [importFile.current]);
 
 	const {

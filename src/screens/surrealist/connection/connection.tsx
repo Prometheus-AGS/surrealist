@@ -64,6 +64,12 @@ let retryTask: any;
 const LQ_SUPPORTED = new Set<Protocol>(["ws", "wss", "mem", "indxdb"]);
 const LIVE_QUERIES = new Map<string, Set<Uuid>>();
 
+export function getInstance() {
+	const a = instance;
+	console.log(a.id);
+	return a;
+};
+
 /**
  * Open a new connection to the data
  *

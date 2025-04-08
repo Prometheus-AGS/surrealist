@@ -10,6 +10,14 @@ interface GraphqlQuery {
  * Customized Surreal wrapper for handling custom logic
  */
 class CustomSurreal extends Surreal {
+
+	public id: string;
+
+	public constructor(options: any = {}) {
+		super(options);
+		this.id = Date.now().toString(36);
+	}
+
 	/**
 	 * Execute a GraphQL query on the database
 	 *
