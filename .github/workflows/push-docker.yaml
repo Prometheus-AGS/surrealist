@@ -58,3 +58,23 @@ jobs:
           tags: |
             surrealdb/surrealist:latest
             surrealdb/surrealist:${{ needs.version.outputs.version }}
+
+  trivy_scan:
+    name: Trivy Image Scanning
+    runs-on: ubuntu-20.04
+    needs:
+      - version
+    steps:
+      - name: Pull docker image
+        id: image-pull
+        run: |
+          docker pull 'surrealdb/surrealist:${{ needs.version.outputs.version }}'
+
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@0.28.0
+        with:
+          image-ref: 'surrealdb/surrealist:${{ needs.version.outputs.version }}'
+          format: "table"
+          vuln-type: "os,library"
+          severity: "CRITICAL,HIGH"
+
