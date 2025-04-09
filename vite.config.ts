@@ -26,6 +26,10 @@ const TOOLS = {
 	"tools/cloud-referral.html": "cloud/referral/index.html",
 };
 
+const ReactCompilerConfig = {
+	runtimeModule: "@/mycache",
+};
+
 export default defineConfig(({ mode }) => {
 	// Required because we cannot pass a custom mode to tauri build
 	mode = isPreview ? "preview" : mode;
@@ -33,7 +37,13 @@ export default defineConfig(({ mode }) => {
 	// Define base plugins
 	const plugins: PluginOption[] = [
 		images(),
-		react(),
+		react({
+			babel: {
+				plugins: [
+					["babel-plugin-react-compiler", ReactCompilerConfig]
+				]
+			}
+		}),
 		markdown({
 			mode: [Mode.HTML],
 		}),
