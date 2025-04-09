@@ -54,18 +54,18 @@ const SqlImportForm = ({ isImporting, confirmImport }: SqlImportFormProps) => {
 
 			try {
 				await instance.import(sql);
-			} catch (err) {
-				return showError({
-					title: "Import failed",
-					subtitle: `There was an error importing the database: ${err}`,
-				});
-			} finally {
+
 				showInfo({
 					title: "Importer",
 					subtitle: "Database was successfully imported",
 				});
 
 				await syncConnectionSchema();
+			} catch (err) {
+				return showError({
+					title: "Import failed",
+					subtitle: `There was an error importing the database: ${err}`,
+				});
 			}
 		};
 
