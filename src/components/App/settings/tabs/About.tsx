@@ -54,8 +54,8 @@ export function AboutTab() {
 				gap="xs"
 				mt="xl"
 			>
-				{information.map(([label, value]) => (
-					<Text key="key">
+				{information.map(([label, value], i) => (
+					<Text key={i}>
 						{label}:{" "}
 						<Text
 							className={classes.aboutValue}
