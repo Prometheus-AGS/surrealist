@@ -95,7 +95,7 @@ export function MiniQueryView() {
 				{miniAppearance === "normal" && (
 					<Group>
 						<Link href="https://surrealdb.com/surrealist">
-							<Group>
+							<Group wrap="nowrap">
 								<Image
 									h={16}
 									src={surrealistIcon}

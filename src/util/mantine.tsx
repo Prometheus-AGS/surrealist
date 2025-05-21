@@ -194,6 +194,8 @@ export const MANTINE_THEME = createTheme({
 				tab: {
 					fontWeight: 600,
 					minHeight: 30,
+					alignItems: "center",
+					justifyContent: "center",
 				},
 			},
 		}),

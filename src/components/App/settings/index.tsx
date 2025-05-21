@@ -151,7 +151,7 @@ function SettingsSidebar({
 				py={4}
 			>
 				<Image
-					h={36}
+					w={180}
 					src={logoUrl}
 				/>
 			</Center>
